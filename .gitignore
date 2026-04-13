@@ -1,0 +1,29 @@
+# Cross-cutting
+.DS_Store
+*.log
+coverage/
+
+# Web (Vite/Node artifacts under web/)
+web/node_modules/
+web/dist/
+web/.vite/
+web/.env
+web/.env.local
+
+# DICOM — never commit ad-hoc files outside samples/
+*.dcm
+!samples/**/*.dcm
+
+# Backend build output + debug dumps
+backend/**/bin/
+backend/**/obj/
+backend/**/debug-frames/
+
+# IDE metadata
+.idea/
+.vs/
+.vscode/
+.vite
+.claude
+
+backend/.idea
