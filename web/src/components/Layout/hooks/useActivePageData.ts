@@ -13,7 +13,8 @@ export function useActivePageData() {
   const server = useServerStudy();
   const pacs = usePacsStudy();
 
-  if (mode === 'about') {
+  // Non-viewer pages: no file upload, no reset, no study
+  if (mode === 'about' || mode === 'download') {
     return {
       mode,
       modeLabel: MODE_LABELS[mode],

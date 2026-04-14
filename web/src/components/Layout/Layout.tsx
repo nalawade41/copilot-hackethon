@@ -4,6 +4,7 @@ import { AboutPage } from '../../pages/AboutPage/AboutPage';
 import { BrowserOnlyPage } from '../../pages/BrowserOnlyPage/BrowserOnlyPage';
 import { ServerBasedPage } from '../../pages/ServerBasedPage/ServerBasedPage';
 import { PacsPage } from '../../pages/PacsPage/PacsPage';
+import { DownloadPage } from '../../pages/DownloadPage/DownloadPage';
 import { useMode } from '../../context/ModeContext';
 import { useMetadataPanel } from '../../context/MetadataPanelContext';
 import { useActivePageData } from './hooks/useActivePageData';
@@ -13,7 +14,7 @@ export function Layout() {
   const { open: metadataOpen, toggle: toggleMetadata } = useMetadataPanel();
   const { modeLabel, studyName, hasStudy, onFiles, onReset } = useActivePageData();
 
-  const isViewer = mode !== 'about';
+  const isViewer = mode !== 'about' && mode !== 'download';
 
   return (
     <div className="h-screen flex">
@@ -35,6 +36,7 @@ export function Layout() {
         {mode === 'client' && <BrowserOnlyPage />}
         {mode === 'server' && <ServerBasedPage />}
         {mode === 'pacs' && <PacsPage />}
+        {mode === 'download' && <DownloadPage />}
       </div>
     </div>
   );

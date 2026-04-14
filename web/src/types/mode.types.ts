@@ -1,2 +1,2 @@
 /** Current view the user is on. */
-export type RenderMode = 'about' | 'client' | 'server' | 'pacs';
+export type RenderMode = 'about' | 'client' | 'server' | 'pacs' | 'download';

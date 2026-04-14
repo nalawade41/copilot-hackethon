@@ -1,15 +1,56 @@
 {
-  "name": "electron",
+  "name": "copilot-dicom-viewer",
   "version": "0.0.1",
   "private": true,
+  "description": "Copilot DICOM Viewer — Electron desktop app with PACS integration",
+  "author": "EAssist",
   "main": "dist/main.cjs",
   "scripts": {
     "build:main": "esbuild src/main.ts --bundle --platform=node --format=cjs --external:electron --outfile=dist/main.cjs",
     "build:preload": "esbuild src/preload.ts --bundle --platform=node --format=cjs --external:electron --outfile=dist/preload.cjs",
-    "build": "npm run build:main && npm run build:preload",
-    "dev": "npm run build && electron .",
+    "build:electron": "npm run build:main && npm run build:preload",
+    "build:web": "cd ../web && npm run build",
+    "copy:renderer": "node scripts/copy-renderer.js",
+    "build:all": "npm run build:web && npm run copy:renderer && npm run build:electron",
+    "dev": "npm run build:electron && electron .",
+    "pack:mac": "npm run build:all && electron-builder --mac",
+    "pack:win": "npm run build:all && electron-builder --win",
+    "pack:all": "npm run build:all && electron-builder --mac --win",
     "test": "vitest run",
     "test:watch": "vitest"
+  },
+  "build": {
+    "appId": "com.eassist.copilot-dicom",
+    "productName": "Copilot DICOM Viewer",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "renderer/**/*"
+    ],
+    "icon": "icons/icon.png",
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["arm64"]
+        }
+      ],
+      "category": "public.app-category.medical"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false
+    }
   },
   "devDependencies": {
     "@types/node": "^22.9.0",

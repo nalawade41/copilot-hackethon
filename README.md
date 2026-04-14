@@ -4,9 +4,10 @@ Monorepo for the EAssist Copilot DICOM viewer hackathon. Multiple apps share one
 
 ```
 copilot-hackethon/
-├── web/          # React + Cornerstone3D front-end (Vite)
-├── backend/      # .NET 8 Minimal API (fo-dicom → PNG)
-├── electron/     # (planned — Phase 3) Electron wrapper + Orthanc PACS client
+├── web/          # React + Cornerstone3D front-end (Vite, deploys to Vercel)
+├── backend/      # .NET 8 Minimal API (fo-dicom → PNG, deploys to Render)
+├── electron/     # Electron desktop app with PACS mode (Mac + Windows builds)
+├── orthanc/      # Orthanc PACS Docker config (deploys to Render)
 ├── samples/      # Shared DICOM test fixtures (public, from dicomlibrary-100)
 └── docs/         # Specs and plans (see docs/superpowers/)
 ```

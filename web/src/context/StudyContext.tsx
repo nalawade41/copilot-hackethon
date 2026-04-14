@@ -35,6 +35,7 @@ export function StudyProvider({ children }: { children: ReactNode }) {
     client: { ...EMPTY },
     server: { ...EMPTY },
     pacs: { ...EMPTY },
+    download: { ...EMPTY },
   });
 
   const patch = useCallback((m: RenderMode, next: Partial<ModeState>) => {

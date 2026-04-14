@@ -1,5 +1,18 @@
 import type { SidebarItem } from './types';
 
+const DOWNLOAD_ITEM: SidebarItem = {
+  mode: 'download',
+  label: 'Desktop App',
+  sublabel: 'Download for Mac / Windows',
+  icon: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
+    </svg>
+  ),
+};
+
 const ALL_ITEMS: SidebarItem[] = [
   {
     mode: 'about',
@@ -47,8 +60,17 @@ const ALL_ITEMS: SidebarItem[] = [
   },
 ];
 
-/** PACS item appears only in Electron. All other items always visible. */
+/**
+ * Returns sidebar items for the current runtime:
+ * - PACS: only in Electron (window.pacs exists)
+ * - Desktop App (download): only in browser (no window.pacs — users already HAVE the app in Electron)
+ */
 export function getSidebarItems(): SidebarItem[] {
-  const hasPacs = typeof window !== 'undefined' && !!window.pacs;
-  return hasPacs ? ALL_ITEMS : ALL_ITEMS.filter((i) => i.mode !== 'pacs');
+  const isElectron = typeof window !== 'undefined' && !!window.pacs;
+  if (isElectron) {
+    // Electron: show PACS, hide download
+    return ALL_ITEMS;
+  }
+  // Browser: hide PACS, show download
+  return [...ALL_ITEMS.filter((i) => i.mode !== 'pacs'), DOWNLOAD_ITEM];
 }
