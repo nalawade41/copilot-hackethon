@@ -6,4 +6,5 @@ export interface ToolbarProps {
   studyName: string | null;
   modeLabel: string;
   hasStudy: boolean;
+  showFilePicker?: boolean;
 }

@@ -10,7 +10,7 @@ interface ModeContextValue {
 const ModeContext = createContext<ModeContextValue | null>(null);
 
 export function ModeProvider({ children }: { children: ReactNode }) {
-  const [mode, setMode] = useState<RenderMode>('client');
+  const [mode, setMode] = useState<RenderMode>('about');
   return (
     <ModeContext.Provider value={{ mode, setMode }}>
       {children}

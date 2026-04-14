@@ -1,2 +1,2 @@
-/** Rendering pipeline the user is viewing. */
-export type RenderMode = 'client' | 'server';
+/** Current view the user is on. */
+export type RenderMode = 'about' | 'client' | 'server' | 'pacs';

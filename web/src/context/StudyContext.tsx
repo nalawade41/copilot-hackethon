@@ -31,8 +31,10 @@ const StudyContext = createContext<StudyContextValue | null>(null);
 
 export function StudyProvider({ children }: { children: ReactNode }) {
   const [states, setStates] = useState<Record<RenderMode, ModeState>>({
+    about: { ...EMPTY },
     client: { ...EMPTY },
     server: { ...EMPTY },
+    pacs: { ...EMPTY },
   });
 
   const patch = useCallback((m: RenderMode, next: Partial<ModeState>) => {

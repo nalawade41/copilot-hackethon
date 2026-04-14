@@ -9,6 +9,7 @@ export function Toolbar({
   studyName,
   modeLabel,
   hasStudy,
+  showFilePicker = true,
 }: ToolbarProps) {
   return (
     <header className="flex items-center justify-between gap-4 px-4 py-2.5 border-b border-slate-800 bg-slate-950">
@@ -22,7 +23,7 @@ export function Toolbar({
         )}
       </div>
       <div className="flex items-center gap-2">
-        <FileDropZone onFiles={onFiles} compact />
+        {showFilePicker && <FileDropZone onFiles={onFiles} compact />}
         {hasStudy && (
           <>
             <button
