@@ -1,4 +1,4 @@
-import { ipcMain, type BrowserWindow } from 'electron';
+import { ipcMain } from 'electron';
 import {
   listStudies,
   listSeries,
@@ -8,12 +8,22 @@ import {
   type PacsStudy,
 } from '../orthanc';
 import { ORTHANC_CFG } from '../config';
+import { getMainWindow } from '../main';
 
 /**
  * Registers all `pacs:*` IPC handlers and starts the 2-second polling loop.
- * Call once after the BrowserWindow is created.
+ *
+ * Must be called EXACTLY ONCE at app startup — NOT per-window. On macOS,
+ * `createWindow()` can run multiple times (app stays alive when the last
+ * window closes; clicking the dock icon fires `activate` → createWindow).
+ * Calling `ipcMain.handle()` twice for the same channel throws, so we keep
+ * handler registration and polling outside the per-window lifecycle.
+ *
+ * The poller's callbacks look up the *current* focused/first window each
+ * tick instead of capturing a single reference — that way the events always
+ * go to whatever window is open now, even after a close+reopen cycle.
  */
-export function registerPacsHandlers(mainWindow: BrowserWindow): void {
+export function registerPacsHandlers(): void {
   // --- Request/response handlers ---
 
   ipcMain.handle('pacs:list-studies', () => listStudies(ORTHANC_CFG));
@@ -48,15 +58,28 @@ export function registerPacsHandlers(mainWindow: BrowserWindow): void {
 
   // --- Polling ---
 
+  // Look up the current window at send time (not at registration time).
+  // This lets events reach whichever window is open after close+reopen.
+  const sendToWindow = (channel: string, payload: unknown) => {
+    // Use the tracked main window reference — NOT BrowserWindow.getAllWindows()[0].
+    // The order of getAllWindows() is undefined and can return a transient
+    // popup (e.g. an Orthanc admin UI link opened via target="_blank"), which
+    // has no preload and silently drops our events.
+    const win = getMainWindow();
+    if (win) {
+      win.webContents.send(channel, payload);
+    }
+  };
+
   const poller = createPoller({
     intervalMs: 2000,
     listStudies: () => listStudies(ORTHANC_CFG),
     onChange: (studies: PacsStudy[]) => {
-      mainWindow.webContents.send('pacs:studies-changed', studies);
+      sendToWindow('pacs:studies-changed', studies);
     },
     onError: (err) => {
       const message = err instanceof Error ? err.message : String(err);
-      mainWindow.webContents.send('pacs:connection-error', message);
+      sendToWindow('pacs:connection-error', message);
     },
   });
 

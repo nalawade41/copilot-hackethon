@@ -49,7 +49,12 @@ export function usePacsStudyList(): PacsStudyListControls {
       setAllStudies(s);
       setConnectionError(null);
     });
-    const unsubErr = window.pacs.onConnectionError((msg) => setConnectionError(msg));
+    // Clear the list on connection errors — a broken poll should not leave
+    // stale studies on screen. If Orthanc comes back, the next tick re-populates.
+    const unsubErr = window.pacs.onConnectionError((msg) => {
+      setConnectionError(msg);
+      setAllStudies([]);
+    });
     return () => { unsubChange(); unsubErr(); };
   }, []);
 

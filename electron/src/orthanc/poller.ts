@@ -31,6 +31,11 @@ export function createPoller(cfg: PollerConfig): Poller {
         cfg.onChange(studies);
       }
     } catch (err) {
+      // Reset the cached signature so the next successful poll is guaranteed
+      // to fire onChange, even if the returned list happens to match the
+      // last-seen one. Without this, the UI (which clears on error) would
+      // stay empty on recovery if nothing on the PACS actually changed.
+      last = null;
       cfg.onError(err);
     }
   }

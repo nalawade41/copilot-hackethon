@@ -4,6 +4,12 @@ import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import { resolve } from 'node:path';
 
 export default defineConfig({
+  // Relative asset paths so the same build works in two hosts:
+  //   - Vercel (HTTP root): './assets/…' resolves to '/assets/…' — fine
+  //   - Electron (file://):  './assets/…' resolves next to index.html — required
+  // Default ('/') emits absolute paths that break under Electron's file://
+  // because '/assets/…' resolves to the disk root, not the app bundle.
+  base: './',
   plugins: [
     react(),
     // Cornerstone's codec bundles (libjpeg-turbo, openjpeg, charls, openjph)
