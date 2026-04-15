@@ -100,7 +100,12 @@ rmdir "$STAGING_DIR"
 echo ""
 
 echo "=== Done! ==="
-ls -lh "$RELEASE_DIR/"
+echo ""
+MAC_SIZE=$(du -h "$RELEASE_DIR/CopilotDICOMViewer-mac.dmg" | cut -f1)
+WIN_SIZE=$(du -h "$RELEASE_DIR/CopilotDICOMViewer-win.exe" | cut -f1)
+echo "Build sizes:"
+echo "  Mac (.dmg):     $MAC_SIZE"
+echo "  Windows (.exe): $WIN_SIZE"
 echo ""
 echo "Files ready at web/public/release/"
 echo "  Mac:     /release/CopilotDICOMViewer-mac.dmg"
