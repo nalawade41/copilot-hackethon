@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { app, BrowserWindow } from 'electron';
 import path from 'node:path';
 import { registerPacsHandlers } from './ipc/handlers';
@@ -18,11 +19,8 @@ function createWindow() {
   });
 
   if (app.isPackaged) {
-    // Production: load the pre-built web app bundled inside the package.
-    // electron-builder copies web/dist/ into resources/app/renderer/
     mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
   } else {
-    // Dev: load from web/'s Vite dev server (run separately).
     mainWindow.loadURL(DEV_URL);
   }
 

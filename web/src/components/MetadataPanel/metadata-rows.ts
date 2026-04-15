@@ -12,4 +12,5 @@ export const METADATA_ROWS: MetadataRow[] = [
   { label: 'Body part',    key: 'bodyPart' },
   { label: 'Study date',   key: 'studyDate', format: formatDicomDate },
   { label: 'Manufacturer', key: 'manufacturer' },
+  { label: 'Description', key: 'studyDescription' },
 ];

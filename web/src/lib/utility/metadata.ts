@@ -8,6 +8,7 @@ const EMPTY: StudyMetadata = {
   bodyPart: undefined,
   studyDate: undefined,
   manufacturer: undefined,
+  studyDescription: undefined,
 };
 
 /**
@@ -34,5 +35,6 @@ export function extractMetadata(buffer: ArrayBuffer): StudyMetadata {
     bodyPart: s('x00180015'),
     studyDate: s('x00080020'),
     manufacturer: s('x00080070'),
+    studyDescription: s('x00081030'),
   };
 }

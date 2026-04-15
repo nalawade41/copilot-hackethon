@@ -1,0 +1,41 @@
+{
+  "Name": "Vendor Simulator (Orthanc)",
+
+  "RemoteAccessAllowed": true,
+  "AuthenticationEnabled": false,
+
+  "DicomPort": 4242,
+  "HttpPort": 8042,
+
+  "Plugins": [
+    "/usr/share/orthanc/plugins/",
+    "/usr/local/share/orthanc/plugins/"
+  ],
+
+  "DicomWeb": {
+    "Enable": true,
+    "Root": "/dicom-web/",
+    "EnableWado": true,
+    "WadoRoot": "/wado",
+    "Ssl": false,
+    "QidoCaseSensitive": false
+  },
+
+  "DicomModalities": {
+    "copilot-gateway-dimse": ["COPILOT", "copilot-hackethon-production.up.railway.app", 4242]
+  },
+
+  "OrthancPeers": {
+    "copilot-gateway-http": ["https://copilot-hackethon-production.up.railway.app"]
+  },
+
+  "DicomAlwaysAllowEcho": true,
+  "DicomAlwaysAllowStore": true,
+  "DicomCheckCalledAet": false,
+  "StableAge": 3,
+  "OverwriteInstances": true,
+
+  "LuaScripts": ["/etc/orthanc/autoforward.lua"],
+
+  "HttpsCACertificates": "/etc/ssl/certs/ca-certificates.crt"
+}

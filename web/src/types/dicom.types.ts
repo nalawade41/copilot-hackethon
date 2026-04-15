@@ -6,6 +6,7 @@ export interface StudyMetadata {
   bodyPart?: string;
   studyDate?: string;
   manufacturer?: string;
+  studyDescription?: string;
 }
 
 /** Result of loading one or more DICOM files. */
