@@ -1,5 +1,39 @@
-const MAC_URL = '/release/CopilotDICOMViewer-mac.dmg';
-const WIN_URL = '/release/CopilotDICOMViewer-win.exe';
+import { useState } from 'react';
+
+// Hosted on S3 (public bucket). Keeping binaries out of the web bundle keeps
+// Vercel deploys fast and avoids GitHub's 100MB file-size push rejection.
+const DOWNLOAD_BASE = 'https://file-sahring-temp-bucket.s3.us-east-1.amazonaws.com';
+const MAC_URL = `${DOWNLOAD_BASE}/CopilotDICOMViewer-mac.dmg`;
+const WIN_URL = `${DOWNLOAD_BASE}/CopilotDICOMViewer-win.exe`;
+
+const MAC_UNLOCK_CMD = 'xattr -cr "/Applications/Copilot DICOM Viewer.app"';
+
+function CopyableCommand({ command }: { command: string }) {
+  const [copied, setCopied] = useState(false);
+  const onCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(command);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // ignore; some browsers disallow clipboard in insecure contexts
+    }
+  };
+  return (
+    <div className="flex items-stretch rounded-md border border-red-500/40 bg-slate-950 overflow-hidden">
+      <code className="flex-1 px-4 py-3 text-sm text-red-200 font-mono select-all whitespace-nowrap overflow-x-auto">
+        {command}
+      </code>
+      <button
+        type="button"
+        onClick={onCopy}
+        className="shrink-0 px-4 text-xs font-semibold uppercase tracking-wider bg-red-500/20 hover:bg-red-500/30 text-red-100 border-l border-red-500/40 transition-colors"
+      >
+        {copied ? 'Copied' : 'Copy'}
+      </button>
+    </div>
+  );
+}
 
 export function DownloadPage() {
   return (
@@ -16,6 +50,71 @@ export function DownloadPage() {
             from an imaging system via the DICOMweb standard.
           </p>
         </div>
+
+        {/* ───────────────────────────────────────────── */}
+        {/* macOS "damaged" workaround — PROMINENT banner */}
+        {/* ───────────────────────────────────────────── */}
+        <section className="rounded-lg border-2 border-red-500/60 bg-red-500/10 p-6">
+          <div className="flex items-start gap-3 mb-4">
+            <div className="shrink-0 w-10 h-10 rounded-full bg-red-500/25 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 text-red-300">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-red-200 leading-snug">
+                macOS users — read this BEFORE opening the app
+              </h2>
+              <p className="text-sm text-red-100/90 mt-1">
+                You will see <span className="font-semibold">&ldquo;Copilot DICOM Viewer&rdquo; is damaged and can&rsquo;t be opened.</span>{' '}
+                The app is <span className="underline">not</span> actually damaged — this is a macOS quarantine check for unsigned hackathon builds. Follow the one-time fix below.
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+
+            <div>
+              <div className="text-xs uppercase tracking-wider text-red-300/80 font-bold mb-2">Step 1 — Install the app first</div>
+              <p className="text-sm text-red-100/90 leading-relaxed">
+                Download the <span className="font-mono text-red-100">.dmg</span> below, open it, and drag
+                <span className="font-mono text-red-100"> Copilot DICOM Viewer</span> into the
+                <span className="font-mono text-red-100"> Applications</span> folder. Don&rsquo;t try to open it yet.
+              </p>
+            </div>
+
+            <div>
+              <div className="text-xs uppercase tracking-wider text-red-300/80 font-bold mb-2">Step 2 — Open Terminal</div>
+              <p className="text-sm text-red-100/90 leading-relaxed">
+                Press <kbd className="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-700 text-xs font-mono text-red-100">⌘ + Space</kbd>{' '}
+                to open Spotlight → type <span className="font-mono text-red-100">Terminal</span> → press Enter.
+              </p>
+            </div>
+
+            <div>
+              <div className="text-xs uppercase tracking-wider text-red-300/80 font-bold mb-2">Step 3 — Copy & run this command</div>
+              <CopyableCommand command={MAC_UNLOCK_CMD} />
+              <p className="text-xs text-red-100/70 leading-relaxed mt-2">
+                Paste with <kbd className="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-700 font-mono text-red-100">⌘ + V</kbd>, press{' '}
+                <kbd className="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-700 font-mono text-red-100">Enter</kbd>. No output = success.
+                (You may be asked for your Mac password — that&rsquo;s normal.)
+              </p>
+            </div>
+
+            <div>
+              <div className="text-xs uppercase tracking-wider text-red-300/80 font-bold mb-2">Step 4 — Open the app normally</div>
+              <p className="text-sm text-red-100/90 leading-relaxed">
+                Double-click <span className="font-mono text-red-100">Copilot DICOM Viewer</span> from Applications or Launchpad. It will now open without the &ldquo;damaged&rdquo; error.
+              </p>
+            </div>
+
+            <p className="text-xs text-red-200/70 pt-2 border-t border-red-500/30">
+              <span className="font-semibold">Why is this needed?</span> The build isn&rsquo;t signed with an Apple Developer certificate (hackathon — no paid Apple account). macOS flags unsigned apps downloaded from browsers as &ldquo;damaged.&rdquo; The command above clears that flag. Only needs to be done once per install.
+            </p>
+          </div>
+        </section>
 
         {/* Download cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -41,8 +140,8 @@ export function DownloadPage() {
               <span className="text-xs text-slate-500">.dmg installer</span>
               <span className="text-xs px-2 py-0.5 rounded bg-accent/15 text-accent">Download</span>
             </div>
-            <p className="mt-3 text-xs text-slate-600">
-              First launch: right-click → Open (macOS blocks unsigned apps once)
+            <p className="mt-3 text-xs text-red-300/90">
+              ⚠ Run the unlock command above <span className="font-semibold">before first launch</span>.
             </p>
           </a>
 
@@ -109,19 +208,14 @@ export function DownloadPage() {
           </div>
         </section>
 
-        {/* Requirements */}
+        {/* Getting started */}
         <section>
-          <h3 className="text-slate-100 font-medium mb-2">Requirements for PACS mode</h3>
+          <h3 className="text-slate-100 font-medium mb-2">Getting started with PACS mode</h3>
           <p className="text-slate-400 text-xs leading-relaxed">
-            PACS mode needs a DICOM server (Orthanc or clinic imaging software) reachable on the network.
-            For the hackathon demo, run Orthanc locally via Docker:
-          </p>
-          <div className="bg-slate-950/60 border border-slate-800 rounded-md p-3 text-xs text-slate-400 font-mono mt-2">
-            docker run --rm -d --name orthanc -p 8042:8042 jodogne/orthanc-plugins
-          </div>
-          <p className="text-xs text-slate-600 mt-2">
-            Then open the app → select PACS from the sidebar → upload a DICOM file to
-            Orthanc at localhost:8042 → the study appears in the app within 2 seconds.
+            No local setup required — the desktop app connects to our hosted DICOM Gateway by default.
+            Open the app → select one of the PACS items in the sidebar → upload a DICOM file to the
+            vendor simulator (link shown inside the PACS view) → the study appears in the app
+            within 2 seconds.
           </p>
         </section>
 
