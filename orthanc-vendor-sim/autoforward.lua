@@ -1,7 +1,15 @@
 -- Auto-forward: every new stable study is pushed to the Copilot gateway
--- via BOTH protocols as SEPARATE studies. Each gets a unique StudyInstanceUID
--- and a tagged description so they appear as two distinct entries in Copilot —
--- one showing "DIMSE C-STORE (TCP)" and one showing "STOW-RS (HTTP)".
+-- via BOTH protocols as SEPARATE studies. Each gets a unique
+-- StudyInstanceUID and a tagged description so they appear as two
+-- distinct entries in Copilot — one showing "DIMSE C-STORE (TCP)" and
+-- one showing "STOW-RS (HTTP)".
+--
+-- NOTE: SendToModality and SendToPeer are ASYNCHRONOUS — they queue jobs
+-- that run after this function returns. We deliberately DO NOT delete
+-- the modified copies here, because the jobs would fail with
+-- "Unknown resource". The modified copies stick around in this vendor
+-- sim's local Orthanc storage; that's fine for a demo. Restart the
+-- Render service to wipe storage if it grows too large.
 
 function OnStableStudy(studyId, tags, metadata)
   local study = ParseJson(RestApiGet('/studies/' .. studyId))
@@ -27,10 +35,8 @@ function OnStableStudy(studyId, tags, metadata)
   local dimseResult = ParseJson(RestApiPost('/studies/' .. studyId .. '/modify', DumpJson(dimseModify, true)))
   local dimseModifiedId = dimseResult['ID']
 
-  PrintRecursive('[autoforward] Pushing via DIMSE C-STORE (TCP)...')
+  PrintRecursive('[autoforward] Queueing DIMSE C-STORE (TCP) push for ' .. dimseModifiedId)
   SendToModality(dimseModifiedId, 'copilot-gateway-dimse')
-  PrintRecursive('[autoforward] DIMSE push complete')
-  RestApiDelete('/studies/' .. dimseModifiedId)
 
   -- === PUSH 2: STOW-RS (HTTP POST) ===
   local stowModify = {
@@ -44,10 +50,8 @@ function OnStableStudy(studyId, tags, metadata)
   local stowResult = ParseJson(RestApiPost('/studies/' .. studyId .. '/modify', DumpJson(stowModify, true)))
   local stowModifiedId = stowResult['ID']
 
-  PrintRecursive('[autoforward] Pushing via STOW-RS (HTTP)...')
+  PrintRecursive('[autoforward] Queueing STOW-RS (HTTP) push for ' .. stowModifiedId)
   SendToPeer(stowModifiedId, 'copilot-gateway-http')
-  PrintRecursive('[autoforward] STOW-RS push complete')
-  RestApiDelete('/studies/' .. stowModifiedId)
 
-  PrintRecursive('[autoforward] Both protocols pushed as separate studies')
+  PrintRecursive('[autoforward] Both push jobs queued. They run async; check JOBS-WORKER logs for completion.')
 end

@@ -13,7 +13,45 @@ const DOWNLOAD_ITEM: SidebarItem = {
   ),
 };
 
-const ALL_ITEMS: SidebarItem[] = [
+// Three PACS items (Electron-only): one per protocol path.
+// All read studies from the same Orthanc — the difference is the protocol
+// each represents in the demo narrative. Studies are tagged in their
+// description by the vendor simulator so users can see which arrived how.
+const PACS_ITEMS: SidebarItem[] = [
+  {
+    mode: 'dicomweb-poll',
+    label: 'DICOMweb (Poll)',
+    sublabel: 'QIDO-RS / WADO-RS',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+        <path d="M21 12a9 9 0 1 1-3-6.7" />
+        <polyline points="21 4 21 10 15 10" />
+      </svg>
+    ),
+  },
+  {
+    mode: 'dimse-push',
+    label: 'DIMSE C-STORE',
+    sublabel: 'Classic TCP push',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+        <path d="M5 12h14M13 6l6 6-6 6" />
+      </svg>
+    ),
+  },
+  {
+    mode: 'stowrs-push',
+    label: 'STOW-RS',
+    sublabel: 'Modern HTTP push',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+        <path d="M12 19V5M5 12l7-7 7 7" />
+      </svg>
+    ),
+  },
+];
+
+const BASE_ITEMS: SidebarItem[] = [
   {
     mode: 'about',
     label: 'How it works',
@@ -48,29 +86,17 @@ const ALL_ITEMS: SidebarItem[] = [
       </svg>
     ),
   },
-  {
-    mode: 'pacs',
-    label: 'PACS',
-    sublabel: 'Orthanc via DICOMweb',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-        <path d="M4 14a4 4 0 0 0 4 4h8a4 4 0 0 0 0-8 5 5 0 0 0-9.9-1A4 4 0 0 0 4 14z" />
-      </svg>
-    ),
-  },
 ];
 
 /**
- * Returns sidebar items for the current runtime:
- * - PACS: only in Electron (window.pacs exists)
- * - Desktop App (download): only in browser (no window.pacs — users already HAVE the app in Electron)
+ * Sidebar items for the current runtime:
+ * - PACS protocol items: only in Electron (window.pacs exists)
+ * - Desktop App (download): only in browser
  */
 export function getSidebarItems(): SidebarItem[] {
   const isElectron = typeof window !== 'undefined' && !!window.pacs;
   if (isElectron) {
-    // Electron: show PACS, hide download
-    return ALL_ITEMS;
+    return [...BASE_ITEMS, ...PACS_ITEMS];
   }
-  // Browser: hide PACS, show download
-  return [...ALL_ITEMS.filter((i) => i.mode !== 'pacs'), DOWNLOAD_ITEM];
+  return [...BASE_ITEMS, DOWNLOAD_ITEM];
 }

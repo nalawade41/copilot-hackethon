@@ -9,11 +9,14 @@ import { useMode } from '../../context/ModeContext';
 import { useMetadataPanel } from '../../context/MetadataPanelContext';
 import { useActivePageData } from './hooks/useActivePageData';
 
+const PACS_MODES = new Set(['dicomweb-poll', 'dimse-push', 'stowrs-push']);
+
 export function Layout() {
   const { mode, setMode } = useMode();
   const { open: metadataOpen, toggle: toggleMetadata } = useMetadataPanel();
   const { modeLabel, studyName, hasStudy, onFiles, onReset } = useActivePageData();
 
+  const isPacs = PACS_MODES.has(mode);
   const isViewer = mode !== 'about' && mode !== 'download';
 
   return (
@@ -29,13 +32,13 @@ export function Layout() {
             studyName={studyName}
             modeLabel={modeLabel}
             hasStudy={hasStudy}
-            showFilePicker={mode !== 'pacs'}
+            showFilePicker={!isPacs}
           />
         )}
         {mode === 'about' && <AboutPage />}
         {mode === 'client' && <BrowserOnlyPage />}
         {mode === 'server' && <ServerBasedPage />}
-        {mode === 'pacs' && <PacsPage />}
+        {isPacs && <PacsPage />}
         {mode === 'download' && <DownloadPage />}
       </div>
     </div>

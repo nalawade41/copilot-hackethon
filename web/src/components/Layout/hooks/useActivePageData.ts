@@ -5,6 +5,8 @@ import { useBrowserStudy } from '../../../pages/BrowserOnlyPage/hooks/useBrowser
 import { useServerStudy } from '../../../pages/ServerBasedPage/hooks/useServerStudy';
 import { usePacsStudy } from '../../../pages/PacsPage/hooks/usePacsStudy';
 
+const PACS_MODES = new Set(['dicomweb-poll', 'dimse-push', 'stowrs-push']);
+
 export function useActivePageData() {
   const { mode } = useMode();
   const { states } = useStudyContext();
@@ -13,7 +15,6 @@ export function useActivePageData() {
   const server = useServerStudy();
   const pacs = usePacsStudy();
 
-  // Non-viewer pages: no file upload, no reset, no study
   if (mode === 'about' || mode === 'download') {
     return {
       mode,
@@ -25,7 +26,7 @@ export function useActivePageData() {
     };
   }
 
-  if (mode === 'pacs') {
+  if (PACS_MODES.has(mode)) {
     const current = states[mode];
     return {
       mode,

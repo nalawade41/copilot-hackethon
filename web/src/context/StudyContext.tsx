@@ -34,7 +34,9 @@ export function StudyProvider({ children }: { children: ReactNode }) {
     about: { ...EMPTY },
     client: { ...EMPTY },
     server: { ...EMPTY },
-    pacs: { ...EMPTY },
+    'dicomweb-poll': { ...EMPTY },
+    'dimse-push': { ...EMPTY },
+    'stowrs-push': { ...EMPTY },
     download: { ...EMPTY },
   });
 
