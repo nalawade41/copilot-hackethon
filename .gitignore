@@ -28,3 +28,4 @@ backend/**/debug-frames/
 .claude
 
 backend/.idea
+web/public/release/
