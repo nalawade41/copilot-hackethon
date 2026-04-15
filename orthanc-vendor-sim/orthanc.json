@@ -22,7 +22,7 @@
   },
 
   "DicomModalities": {
-    "copilot-gateway-dimse": ["COPILOT", "copilot-hackethon-production.up.railway.app", 4242]
+    "copilot-gateway-dimse": ["COPILOT", "monorail.proxy.rlwy.net", 28724]
   },
 
   "OrthancPeers": {

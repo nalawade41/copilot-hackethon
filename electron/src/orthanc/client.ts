@@ -49,7 +49,9 @@ function mapSeries(raw: unknown, studyUID: string): PacsSeries {
 export async function listStudies(cfg: OrthancConfig = {}): Promise<PacsStudy[]> {
   const base = cfg.baseUrl ?? DEFAULT_BASE;
   const auth = cfg.auth ?? DEFAULT_AUTH;
-  const arr = await getJson<unknown[]>(`${base}/studies`, auth);
+  // includefield=00081030 → ask Orthanc to return StudyDescription
+  // (QIDO-RS returns a default tag set; non-default tags must be requested)
+  const arr = await getJson<unknown[]>(`${base}/studies?includefield=00081030`, auth);
   return arr.map(mapStudy);
 }
 
