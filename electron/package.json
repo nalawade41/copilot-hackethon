@@ -27,7 +27,9 @@
     },
     "files": [
       "dist/**/*",
-      "renderer/**/*"
+      "renderer/**/*",
+      "!renderer/release/**/*",
+      "release/*"
     ],
     "icon": "icons/icon.png",
     "mac": {

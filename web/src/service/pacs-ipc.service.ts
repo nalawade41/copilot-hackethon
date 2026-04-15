@@ -18,6 +18,10 @@ export const pacsSource: DicomSource<string> = {
         bodyPart: undefined,
         studyDate: study.studyDate || undefined,
         manufacturer: undefined,
+        // Empty description in PACS almost always means the study was
+        // uploaded directly via DICOMweb (the push protocols tag their
+        // descriptions). Surface that to the user instead of showing "—".
+        studyDescription: study.description || '[DICOMweb (Poll)]',
       },
     };
   },

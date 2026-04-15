@@ -8,295 +8,249 @@ export function AboutPage() {
         {/* Header */}
         <div>
           <h1 className="text-xl font-semibold text-slate-100 mb-2">
-            Copilot DICOM Viewer
+            Copilot DICOM Viewer — Hackathon POC
           </h1>
           <p className="leading-relaxed text-slate-400">
-            A hackathon prototype demonstrating how EAssist Copilot can display dental X-rays and
-            medical images using the <span className="text-slate-200">DICOM standard</span> — the
-            universal format used by every imaging device in healthcare.
+            A working demo showing how EAssist Copilot can receive and display dental X-rays
+            using <span className="text-slate-200">DICOM</span> — the universal medical imaging
+            standard that every X-ray machine, sensor, and clinic software in the world already speaks.
           </p>
         </div>
+
+        {/* What we built */}
+        <section className="rounded-lg border border-accent/30 bg-accent/5 p-5">
+          <h2 className="text-base font-medium text-slate-100 mb-3">What we built</h2>
+          <ul className="space-y-1.5 text-slate-300 leading-relaxed list-disc list-inside marker:text-slate-600">
+            <li>A <span className="text-slate-100">DICOM viewer</span> that runs in the browser and as a desktop app</li>
+            <li>Three ways to load an image: <span className="text-slate-100">browser-only</span>, <span className="text-slate-100">backend server</span>, and <span className="text-slate-100">PACS integration</span></li>
+            <li>All <span className="text-slate-100">three industry-standard protocols</span> for clinic ⇄ Copilot image transfer (covering 100% of dental imaging vendors)</li>
+            <li>A <span className="text-slate-100">simulated vendor</span> that mirrors what real clinic software does — auto-pushes new X-rays to Copilot the moment they're "captured"</li>
+          </ul>
+        </section>
 
         {/* Modes overview */}
         <div>
           <h2 className="text-base font-medium text-slate-100 mb-3">
-            Three ways to view images
+            Viewing modes (sidebar on the left)
           </h2>
           <p className="text-slate-400 mb-4">
-            Use the sidebar on the left to switch between modes. Each demonstrates a different
-            integration path — all using the same viewer.
+            Each mode is a different way Copilot can get a DICOM image. Same viewer, different source.
           </p>
         </div>
 
         {/* 1. Browser Only */}
         <section className="rounded-lg border border-slate-800 bg-slate-950/40 p-5">
-          <h3 className="text-slate-100 font-medium flex items-center gap-2 mb-3">
+          <h3 className="text-slate-100 font-medium flex items-center gap-2 mb-2">
             <span className="inline-flex items-center justify-center w-7 h-7 rounded-md bg-accent/20 text-accent text-xs font-bold">1</span>
             Browser Only
           </h3>
-          <p className="leading-relaxed mb-3">
-            The DICOM file is processed <span className="text-slate-100">entirely in your browser</span>.
-            Nothing leaves your computer — the image never touches a server.
+          <p className="leading-relaxed mb-2">
+            DICOM file is decoded <span className="text-slate-100">entirely in your browser</span> — nothing leaves your computer.
           </p>
-          <div className="bg-slate-950/60 border border-slate-800 rounded-md p-3 text-xs text-slate-400 font-mono mb-3">
-            You pick a file → Browser decodes it → Image appears on screen
-          </div>
           <p className="text-xs text-slate-500">
-            <span className="text-slate-400 font-medium">Best for:</span> Quick previews, privacy-sensitive
-            files, working offline. You get full brightness/contrast control because the raw image
-            data stays in the browser.
+            <span className="text-slate-400 font-medium">Best for:</span> private previews, offline work, full brightness/contrast control.
           </p>
           <p className="text-xs text-slate-600 mt-2">
-            Technology: React + Cornerstone3D (open-source medical imaging library)
+            Tech: React + Cornerstone3D
           </p>
         </section>
 
         {/* 2. Server Based */}
         <section className="rounded-lg border border-slate-800 bg-slate-950/40 p-5">
-          <h3 className="text-slate-100 font-medium flex items-center gap-2 mb-3">
+          <h3 className="text-slate-100 font-medium flex items-center gap-2 mb-2">
             <span className="inline-flex items-center justify-center w-7 h-7 rounded-md bg-accent/20 text-accent text-xs font-bold">2</span>
             Server Based
           </h3>
-          <p className="leading-relaxed mb-3">
-            The DICOM file is uploaded to a <span className="text-slate-100">backend server</span> which
-            reads the medical data, converts it to a regular image (PNG), and sends it back.
+          <p className="leading-relaxed mb-2">
+            DICOM file is uploaded to a <span className="text-slate-100">backend server</span> which converts it to a regular image and sends it back.
           </p>
-          <div className="bg-slate-950/60 border border-slate-800 rounded-md p-3 text-xs text-slate-400 font-mono mb-3">
-            You pick a file → Server converts it to PNG → Image appears on screen
-          </div>
           <p className="text-xs text-slate-500">
-            <span className="text-slate-400 font-medium">Best for:</span> Demonstrating that the same
-            viewer works with a backend processing pipeline. In production, this path could add
-            AI analysis, automated measurements, or report generation on the server before returning results.
+            <span className="text-slate-400 font-medium">Best for:</span> demonstrating where AI analysis, auto-measurements, or report generation would plug in on the server side.
           </p>
           <p className="text-xs text-slate-600 mt-2">
-            Technology: .NET 8 + fo-dicom (open-source DICOM library for .NET)
+            Tech: .NET 8 + fo-dicom
           </p>
         </section>
 
-        {/* 3. PACS */}
+        {/* 3. PACS — three sub-modes */}
         {hasPacs && (
           <section className="rounded-lg border border-slate-800 bg-slate-950/40 p-5">
-            <h3 className="text-slate-100 font-medium flex items-center gap-2 mb-3">
+            <h3 className="text-slate-100 font-medium flex items-center gap-2 mb-2">
               <span className="inline-flex items-center justify-center w-7 h-7 rounded-md bg-accent/20 text-accent text-xs font-bold">3</span>
-              PACS (Picture Archiving &amp; Communication System)
+              PACS Integration <span className="text-slate-500 font-normal text-xs">(three sub-modes)</span>
             </h3>
             <p className="leading-relaxed mb-3">
-              Instead of you manually picking a file, the app <span className="text-slate-100">automatically
-              detects new X-rays</span> as they arrive in an imaging system — just like it would in
-              a real dental clinic.
+              Copilot connects directly to clinic imaging software — no manual file picking. Three sidebar entries
+              show the <span className="text-slate-100">three different protocols</span> we built support for:
             </p>
-            <div className="bg-slate-950/60 border border-slate-800 rounded-md p-3 text-xs text-slate-400 font-mono mb-3">
-              Tech takes X-ray → Imaging software stores it → Copilot detects it within 2 seconds → Image appears
-            </div>
+            <ul className="space-y-1.5 text-slate-300 text-xs leading-relaxed list-disc list-inside marker:text-slate-600 mb-3">
+              <li><span className="text-slate-100">DICOMweb (Poll)</span> — Copilot asks the clinic "any new X-rays?" every 2 seconds</li>
+              <li><span className="text-slate-100">DIMSE C-STORE</span> — Clinic sends new X-rays to Copilot the moment they're captured (classic TCP)</li>
+              <li><span className="text-slate-100">STOW-RS</span> — Same as DIMSE but over modern HTTP</li>
+            </ul>
             <p className="text-xs text-slate-500">
-              <span className="text-slate-400 font-medium">How it works:</span> Copilot checks the imaging
-              system every 2 seconds using a healthcare standard called DICOMweb. When a new study
-              appears, it fetches the image data and displays it automatically. No manual upload needed.
+              Each study in the list shows which protocol delivered it (tagged in its description), so you can see them flow into the right tab as you upload.
             </p>
             <p className="text-xs text-slate-600 mt-2">
-              Technology: Electron (desktop app) + Orthanc (open-source DICOM server simulating clinic software)
+              Tech: Electron desktop app + Orthanc (open-source DICOM server)
             </p>
           </section>
         )}
 
-        {/* ─── Integration models ─── */}
+        {/* The three servers */}
         <div>
           <h2 className="text-base font-medium text-slate-100 mb-2">
-            How Copilot connects to clinic imaging systems
+            The three servers in this demo — and what they represent
           </h2>
           <p className="text-slate-400 mb-4">
-            There are two standard ways for Copilot to get images from a clinic's X-ray system.
-            Both use the DICOM standard — the difference is <span className="text-slate-200">who initiates
-            the transfer</span>.
+            Our POC runs <span className="text-slate-200">three independent servers</span> in the cloud.
+            Each one stands in for a different piece of a real Copilot + clinic setup.
           </p>
         </div>
 
-        {/* Pull model */}
-        <section className="rounded-lg border border-slate-800 bg-slate-950/40 p-5">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="inline-flex items-center justify-center px-2.5 py-1 rounded-md bg-green-500/15 text-green-400 text-[10px] font-bold uppercase tracking-wider">
-              Built in this demo
-            </span>
-          </div>
-          <h3 className="text-slate-100 font-medium mb-2">
-            Pull model — Copilot asks for images
-          </h3>
-          <p className="leading-relaxed mb-3">
-            Copilot periodically checks the clinic's imaging system: <span className="text-slate-200">"Do you
-            have any new X-rays?"</span> When something new appears, Copilot downloads it and displays it.
-            This is called <span className="text-slate-200">polling</span>.
-          </p>
-          <div className="bg-slate-950/60 border border-slate-800 rounded-md p-3 text-xs text-slate-400 font-mono mb-3">
-            Copilot checks every 2 seconds → "Any new studies?" → Downloads new images → Displays them
-          </div>
-          <div className="space-y-2 mb-3">
-            <p className="text-xs text-slate-500">
-              <span className="text-slate-400 font-medium">Protocol:</span> DICOMweb (HTTP-based) — a modern
-              standard adopted since ~2015 and increasingly supported by most major imaging vendors.
-            </p>
-            <p className="text-xs text-slate-500">
-              <span className="text-slate-400 font-medium">Clinic setup required:</span> None. The clinic's
-              imaging system is already running. Copilot just needs the system's network address
-              (hostname/URL) entered in settings.
-            </p>
-            <p className="text-xs text-slate-500">
-              <span className="text-slate-400 font-medium">Who configures:</span> EAssist onboarding team
-              enters one URL in Copilot's settings. The clinic doesn't change anything on their end.
-            </p>
-          </div>
-          <div className="rounded-md border border-slate-800 overflow-hidden">
-            <table className="w-full text-xs">
-              <thead className="bg-slate-800/60 text-slate-400">
-                <tr>
-                  <th className="text-left px-3 py-2 font-medium">Copilot needs</th>
-                  <th className="text-left px-3 py-2 font-medium">Clinic needs to do</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800 text-slate-300">
-                <tr>
-                  <td className="px-3 py-2">Clinic's PACS URL entered in settings</td>
-                  <td className="px-3 py-2">Nothing — their system is already running</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div className="mt-3 flex items-center gap-2">
-            <span className="text-[10px] text-slate-600 uppercase tracking-wider font-medium">Vendor support:</span>
-            <span className="text-xs text-slate-400">Orthanc, Carestream (newer), Google Cloud Healthcare, dcm4chee, and growing — most modern PACS support DICOMweb</span>
-          </div>
-        </section>
+        <div className="rounded-md border border-slate-800 overflow-hidden">
+          <table className="w-full text-xs">
+            <thead className="bg-slate-800/60 text-slate-400">
+              <tr>
+                <th className="text-left px-4 py-2.5 font-medium">Server in our demo</th>
+                <th className="text-left px-4 py-2.5 font-medium">What it represents in real life</th>
+                <th className="text-left px-4 py-2.5 font-medium">Role in the demo</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-800 text-slate-300">
+              <tr>
+                <td className="px-4 py-3 align-top">
+                  <span className="text-slate-100 font-medium">Vendor Sim Orthanc</span>
+                  <div className="text-slate-600 mt-1">copilot-vendor-sim-production…</div>
+                </td>
+                <td className="px-4 py-3 align-top">
+                  The clinic's <span className="text-slate-100">imaging software</span> sitting next to the X-ray machine — DEXIS, Carestream, Sidexis, Planmeca, etc.
+                </td>
+                <td className="px-4 py-3 align-top">
+                  You upload a DICOM file here to "simulate" a tech taking an X-ray. It then auto-pushes the image to Copilot via DIMSE and STOW-RS.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-4 py-3 align-top">
+                  <span className="text-slate-100 font-medium">Gateway Orthanc</span>
+                  <div className="text-slate-600 mt-1">copilot-hackethon-production…</div>
+                </td>
+                <td className="px-4 py-3 align-top">
+                  Copilot's <span className="text-slate-100">cloud receiver</span> — where incoming images from vendors land before Copilot displays them.
+                </td>
+                <td className="px-4 py-3 align-top">
+                  Listens on all three protocols. The desktop app polls this server every 2 seconds for new studies.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-4 py-3 align-top">
+                  <span className="text-slate-100 font-medium">.NET Backend Server</span>
+                  <div className="text-slate-600 mt-1">copilot-backend-production…</div>
+                </td>
+                <td className="px-4 py-3 align-top">
+                  Copilot's <span className="text-slate-100">processing backend</span> — where AI analysis, automated measurements, and report generation would live in production.
+                </td>
+                <td className="px-4 py-3 align-top">
+                  Powers the "Server Based" mode. Reads DICOM files, converts to standard images, and streams them back to the viewer.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-        {/* Push model */}
-        <section className="rounded-lg border border-slate-800 bg-slate-950/40 p-5">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="inline-flex items-center justify-center px-2.5 py-1 rounded-md bg-amber-500/15 text-amber-400 text-[10px] font-bold uppercase tracking-wider">
-              Production upgrade (not yet built)
-            </span>
-          </div>
-          <h3 className="text-slate-100 font-medium mb-2">
-            Push model — Imaging system sends images to Copilot
-          </h3>
-          <p className="leading-relaxed mb-3">
-            Instead of Copilot checking repeatedly, the clinic's imaging system <span className="text-slate-200">automatically
-            sends new X-rays to Copilot the moment they're captured</span>. This is how most
-            hospital systems work today — it's instant and doesn't require constant polling.
-          </p>
-          <div className="bg-slate-950/60 border border-slate-800 rounded-md p-3 text-xs text-slate-400 font-mono mb-3">
-            Tech takes X-ray → Imaging software sends it to Copilot instantly → Image appears
-          </div>
-          <div className="space-y-2 mb-3">
-            <p className="text-xs text-slate-500">
-              <span className="text-slate-400 font-medium">Protocol:</span> DIMSE C-STORE (TCP-based) —
-              the original DICOM transfer standard, supported by <span className="text-slate-300">every</span> imaging
-              device since the 1990s. Also available over HTTP via STOW-RS (part of DICOMweb).
-            </p>
-            <p className="text-xs text-slate-500">
-              <span className="text-slate-400 font-medium">Clinic setup required:</span> A one-time
-              configuration by the clinic's IT person. They add Copilot as a "DICOM destination" in
-              their imaging software — entering Copilot's address, port, and identifier. Takes about 2 minutes.
-            </p>
-            <p className="text-xs text-slate-500">
-              <span className="text-slate-400 font-medium">Who configures:</span> Clinic's IT admin
-              adds 3 values to their PACS settings (we provide them). After that, every new X-ray
-              flows to Copilot automatically.
-            </p>
-          </div>
-          <div className="rounded-md border border-slate-800 overflow-hidden">
-            <table className="w-full text-xs">
-              <thead className="bg-slate-800/60 text-slate-400">
-                <tr>
-                  <th className="text-left px-3 py-2 font-medium">Copilot needs</th>
-                  <th className="text-left px-3 py-2 font-medium">Clinic needs to do</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800 text-slate-300">
-                <tr>
-                  <td className="px-3 py-2">A listening endpoint (open port or URL)</td>
-                  <td className="px-3 py-2">Add Copilot as a destination in their PACS (3 fields, once)</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div className="mt-3 flex items-center gap-2">
-            <span className="text-[10px] text-slate-600 uppercase tracking-wider font-medium">Vendor support:</span>
-            <span className="text-xs text-slate-400">Universal — every DICOM device supports DIMSE push. It's been the standard since the 1990s.</span>
-          </div>
-        </section>
+        <div className="rounded-md bg-slate-950/60 border border-slate-800 p-3 text-xs text-slate-400 font-mono">
+          You upload to <span className="text-slate-200">Vendor Sim</span> → it auto-forwards via DIMSE + STOW-RS → <span className="text-slate-200">Gateway</span> receives → Copilot polls Gateway → image appears
+        </div>
 
-        {/* Comparison */}
-        <section>
-          <h3 className="text-slate-100 font-medium mb-3">Pull vs Push — at a glance</h3>
-          <div className="rounded-md border border-slate-800 overflow-hidden">
-            <table className="w-full text-xs">
-              <thead className="bg-slate-800/60 text-slate-400">
-                <tr>
-                  <th className="text-left px-4 py-2.5 font-medium"></th>
-                  <th className="text-left px-4 py-2.5 font-medium">Pull (what we built)</th>
-                  <th className="text-left px-4 py-2.5 font-medium">Push (production upgrade)</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800 text-slate-300">
-                <tr>
-                  <td className="px-4 py-2.5 text-slate-400 font-medium">Who initiates</td>
-                  <td className="px-4 py-2.5">Copilot asks for data</td>
-                  <td className="px-4 py-2.5">Vendor sends data</td>
-                </tr>
-                <tr>
-                  <td className="px-4 py-2.5 text-slate-400 font-medium">Speed</td>
-                  <td className="px-4 py-2.5">~2 second delay (polling interval)</td>
-                  <td className="px-4 py-2.5">Instant (sent on capture)</td>
-                </tr>
-                <tr>
-                  <td className="px-4 py-2.5 text-slate-400 font-medium">Protocol era</td>
-                  <td className="px-4 py-2.5">Modern — DICOMweb (HTTP, since ~2015)</td>
-                  <td className="px-4 py-2.5">Classic — DIMSE (TCP, since 1993) + modern STOW-RS option</td>
-                </tr>
-                <tr>
-                  <td className="px-4 py-2.5 text-slate-400 font-medium">Clinic setup</td>
-                  <td className="px-4 py-2.5">
-                    <span className="text-green-400">None</span> — we just need their URL
-                  </td>
-                  <td className="px-4 py-2.5">
-                    Minimal — IT adds Copilot as destination (3 fields, once)
-                  </td>
-                </tr>
-                <tr>
-                  <td className="px-4 py-2.5 text-slate-400 font-medium">Copilot setup</td>
-                  <td className="px-4 py-2.5">Enter clinic's PACS URL</td>
-                  <td className="px-4 py-2.5">Open a listening port or URL</td>
-                </tr>
-                <tr>
-                  <td className="px-4 py-2.5 text-slate-400 font-medium">Vendor compatibility</td>
-                  <td className="px-4 py-2.5">Most modern PACS (growing since 2015)</td>
-                  <td className="px-4 py-2.5">
-                    <span className="text-green-400">Universal</span> — every DICOM device since 1993
-                  </td>
-                </tr>
-                <tr>
-                  <td className="px-4 py-2.5 text-slate-400 font-medium">Best for</td>
-                  <td className="px-4 py-2.5">Quick onboarding, modern clinics</td>
-                  <td className="px-4 py-2.5">High-volume clinics, real-time workflows, older equipment</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <p className="text-xs text-slate-500 mt-3">
-            <span className="text-slate-400 font-medium">Recommendation for production:</span> Support
-            both. Start with pull (zero clinic setup, works today) and add push as a premium
-            feature for clinics that need real-time delivery or have older equipment that doesn't
-            support DICOMweb.
-          </p>
-        </section>
-
-        {/* Production story */}
+        {/* Protocols */}
         <div>
-          <h2 className="text-base font-medium text-slate-100 mb-3">
-            What's real vs. what's a demo stand-in
+          <h2 className="text-base font-medium text-slate-100 mb-2">
+            The three protocols — and which clinics support each
           </h2>
           <p className="text-slate-400 mb-4">
-            Some pieces in this demo are simplified versions of what a real clinic deployment would look like.
-            Here's what stays and what swaps out:
+            All three are official DICOM standards. The difference is <span className="text-slate-200">who initiates the transfer</span> and <span className="text-slate-200">how widely supported</span> each one is across vendors.
+          </p>
+        </div>
+
+        <div className="rounded-md border border-slate-800 overflow-x-auto">
+          <table className="w-full text-xs min-w-[760px]">
+            <thead className="bg-slate-800/60 text-slate-400">
+              <tr>
+                <th className="text-left px-4 py-2.5 font-medium">Protocol</th>
+                <th className="text-left px-4 py-2.5 font-medium">Direction</th>
+                <th className="text-left px-4 py-2.5 font-medium">Vendor coverage</th>
+                <th className="text-left px-4 py-2.5 font-medium">Clinic side setup</th>
+                <th className="text-left px-4 py-2.5 font-medium">Copilot side setup</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-800 text-slate-300">
+              <tr>
+                <td className="px-4 py-3 align-top">
+                  <span className="text-slate-100 font-medium">DIMSE C-STORE</span>
+                  <div className="text-slate-600 mt-1">Classic TCP, since 1993</div>
+                </td>
+                <td className="px-4 py-3 align-top">Clinic → Copilot (push)</td>
+                <td className="px-4 py-3 align-top">
+                  <span className="text-green-400 font-medium">~100%</span>
+                  <div className="text-slate-600 mt-1">Universal — every DICOM device</div>
+                </td>
+                <td className="px-4 py-3 align-top">
+                  Clinic IT adds Copilot as a <span className="text-slate-100">DICOM destination</span> in their PACS — 3 fields: <span className="text-slate-200">hostname, port, AE Title</span>. One-time, ~2 min.
+                </td>
+                <td className="px-4 py-3 align-top">
+                  Expose a <span className="text-slate-100">public TCP endpoint</span> + give the clinic those 3 values.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-4 py-3 align-top">
+                  <span className="text-slate-100 font-medium">STOW-RS</span>
+                  <div className="text-slate-600 mt-1">Modern HTTP, since ~2015</div>
+                </td>
+                <td className="px-4 py-3 align-top">Clinic → Copilot (push)</td>
+                <td className="px-4 py-3 align-top">
+                  <span className="text-amber-400 font-medium">~50–60%</span>
+                  <div className="text-slate-600 mt-1">Most modern PACS, growing</div>
+                </td>
+                <td className="px-4 py-3 align-top">
+                  Clinic IT adds Copilot's <span className="text-slate-100">HTTPS URL</span> as a STOW endpoint in their PACS. One-time, ~2 min.
+                </td>
+                <td className="px-4 py-3 align-top">
+                  Expose a <span className="text-slate-100">public HTTPS endpoint</span> + give the clinic the URL.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-4 py-3 align-top">
+                  <span className="text-slate-100 font-medium">DICOMweb (QIDO/WADO)</span>
+                  <div className="text-slate-600 mt-1">Modern HTTP, since ~2015</div>
+                </td>
+                <td className="px-4 py-3 align-top">Copilot → Clinic (poll)</td>
+                <td className="px-4 py-3 align-top">
+                  <span className="text-amber-400 font-medium">~50–60%</span>
+                  <div className="text-slate-600 mt-1">Most modern PACS, growing</div>
+                </td>
+                <td className="px-4 py-3 align-top">
+                  <span className="text-green-400 font-medium">None.</span> Clinic just shares their PACS URL (and credentials, if any). Nothing to install or change.
+                </td>
+                <td className="px-4 py-3 align-top">
+                  Add the <span className="text-slate-100">clinic's PACS URL</span> in Copilot's settings.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p className="text-xs text-slate-500">
+          <span className="text-slate-400 font-medium">Bottom line:</span> by supporting all three, Copilot can integrate with
+          <span className="text-slate-200"> any clinic in the dental market</span> — newer ones via HTTP, older ones via classic DIMSE.
+        </p>
+
+        {/* What's real vs demo stand-in */}
+        <div>
+          <h2 className="text-base font-medium text-slate-100 mb-2">
+            What's real vs. demo stand-in
+          </h2>
+          <p className="text-slate-400 mb-4">
+            Everything Copilot does is production-shaped. The pieces that change in a real deployment are external to Copilot.
           </p>
         </div>
 
@@ -306,58 +260,119 @@ export function AboutPage() {
               <tr>
                 <th className="text-left px-4 py-2.5 font-medium">In this demo</th>
                 <th className="text-left px-4 py-2.5 font-medium">In a real clinic</th>
-                <th className="text-left px-4 py-2.5 font-medium">What changes in Copilot</th>
+                <th className="text-left px-4 py-2.5 font-medium">Copilot change</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800 text-slate-300">
               <tr>
-                <td className="px-4 py-3">Sample X-ray files you upload manually</td>
-                <td className="px-4 py-3">X-ray machine captures the image automatically</td>
-                <td className="px-4 py-3">Nothing — Copilot receives the same DICOM data either way</td>
+                <td className="px-4 py-3">You upload a sample DICOM to the Vendor Sim</td>
+                <td className="px-4 py-3">X-ray machine captures and stores automatically</td>
+                <td className="px-4 py-3">None — same DICOM data either way</td>
               </tr>
               <tr>
-                <td className="px-4 py-3">Backend server runs on your laptop or Render</td>
-                <td className="px-4 py-3">Backend runs on a cloud server (AWS, Azure, etc.)</td>
-                <td className="px-4 py-3">Change the server URL in settings — no code changes</td>
+                <td className="px-4 py-3">Vendor Sim Orthanc auto-forwards uploads</td>
+                <td className="px-4 py-3">Real vendor software (DEXIS, Carestream, Planmeca, Sidexis…) does the forwarding</td>
+                <td className="px-4 py-3">Swap the destination URL in vendor settings — Copilot speaks the same protocols</td>
               </tr>
               <tr>
-                <td className="px-4 py-3">Copilot polls for new images (pull model)</td>
-                <td className="px-4 py-3">Vendor pushes images to Copilot (push model) or Copilot polls (both work)</td>
-                <td className="px-4 py-3">Add a push receiver endpoint — pull still works as fallback</td>
+                <td className="px-4 py-3">Gateway Orthanc hosted on Railway (cloud)</td>
+                <td className="px-4 py-3">Same gateway hosted on Copilot's production cloud (AWS / Azure)</td>
+                <td className="px-4 py-3">Change deployment target — code stays the same</td>
               </tr>
-              {hasPacs && (
-                <>
-                  <tr>
-                    <td className="px-4 py-3">
-                      <span className="text-slate-100">Orthanc</span> (free open-source imaging server) simulates the clinic's imaging software
-                    </td>
-                    <td className="px-4 py-3">
-                      Real vendor software — <span className="text-slate-100">DEXIS, Carestream, Planmeca, Sidexis</span>, or any DICOM-capable vendor
-                    </td>
-                    <td className="px-4 py-3">
-                      Swap the connection URL — Copilot speaks the same DICOM standard all vendors use
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="px-4 py-3">You drag a file into Orthanc's admin page to simulate a scan</td>
-                    <td className="px-4 py-3">Dental tech takes an X-ray → vendor software stores it automatically</td>
-                    <td className="px-4 py-3">No Copilot change — the image arrives via the same protocol</td>
-                  </tr>
-                </>
-              )}
+              <tr>
+                <td className="px-4 py-3">Backend server on a developer laptop / Railway</td>
+                <td className="px-4 py-3">Backend server in Copilot's production cloud</td>
+                <td className="px-4 py-3">Change one URL in settings</td>
+              </tr>
             </tbody>
           </table>
         </div>
+
+        {/* Points to ponder — open product decisions */}
+        <div>
+          <h2 className="text-base font-medium text-slate-100 mb-2">
+            Points to ponder — open product decisions
+          </h2>
+          <p className="text-slate-400 mb-4">
+            A few trade-offs the POC surfaces that we'll need to take a call on before going to production.
+          </p>
+        </div>
+
+        <section className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-5 space-y-3">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center justify-center px-2.5 py-1 rounded-md bg-amber-500/15 text-amber-400 text-[10px] font-bold uppercase tracking-wider">
+              Decision needed
+            </span>
+            <h3 className="text-slate-100 font-medium">Storage format — PNG vs original DICOM</h3>
+          </div>
+          <p className="leading-relaxed text-slate-300">
+            In <span className="text-slate-100">Server Based</span> mode today, we convert each DICOM to a
+            <span className="text-slate-100"> PNG</span> on the backend before sending it to the viewer.
+            That keeps payloads small and snappy in the browser, but it
+            <span className="text-slate-100"> strips out everything DICOM carries beyond the pixels</span> — patient info,
+            study description, modality, body part, manufacturer, acquisition parameters, and so on.
+          </p>
+
+          <div className="rounded-md border border-slate-800 overflow-hidden">
+            <table className="w-full text-xs">
+              <thead className="bg-slate-800/60 text-slate-400">
+                <tr>
+                  <th className="text-left px-4 py-2.5 font-medium">Option</th>
+                  <th className="text-left px-4 py-2.5 font-medium">File size</th>
+                  <th className="text-left px-4 py-2.5 font-medium">Metadata preserved</th>
+                  <th className="text-left px-4 py-2.5 font-medium">Trade-off</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800 text-slate-300">
+                <tr>
+                  <td className="px-4 py-3 align-top">
+                    <span className="text-slate-100 font-medium">PNG</span>
+                    <div className="text-slate-600 mt-1">Converted on backend</div>
+                  </td>
+                  <td className="px-4 py-3 align-top">
+                    <span className="text-green-400 font-medium">Small</span>
+                    <div className="text-slate-600 mt-1">~100–500 KB typical</div>
+                  </td>
+                  <td className="px-4 py-3 align-top">
+                    <span className="text-red-400 font-medium">No</span>
+                    <div className="text-slate-600 mt-1">Patient info, modality, etc. all lost</div>
+                  </td>
+                  <td className="px-4 py-3 align-top">Fast on slow internet, but no clinical context to drive AI, reports, or measurements.</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-3 align-top">
+                    <span className="text-slate-100 font-medium">Original DICOM</span>
+                    <div className="text-slate-600 mt-1">Stored as-is</div>
+                  </td>
+                  <td className="px-4 py-3 align-top">
+                    <span className="text-amber-400 font-medium">Large</span>
+                    <div className="text-slate-600 mt-1">~1 MB to 40–50 MB per study</div>
+                  </td>
+                  <td className="px-4 py-3 align-top">
+                    <span className="text-green-400 font-medium">Yes</span>
+                    <div className="text-slate-600 mt-1">Full clinical record retained</div>
+                  </td>
+                  <td className="px-4 py-3 align-top">Painful on slow clinic internet (rural offices, smaller practices) — uploads and viewer loads can stall.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p className="text-xs text-slate-400">
+            <span className="text-slate-300 font-medium">Worth considering:</span> a <span className="text-slate-200">hybrid approach</span> —
+            store the original DICOM (so we never lose clinical metadata) but generate a small PNG/JPEG preview alongside it.
+            Viewer loads the lightweight preview by default; full DICOM fetched only when needed (zoom, brightness/contrast, AI re-analysis).
+            That gives us metadata fidelity without punishing clinics on slow connections.
+          </p>
+        </section>
 
         {/* Key takeaway */}
         <section className="rounded-lg border border-accent/30 bg-accent/5 p-5">
           <h3 className="text-slate-100 font-medium mb-2">Key takeaway</h3>
           <p className="leading-relaxed">
-            Copilot uses <span className="text-slate-100 font-medium">DICOM</span> — the same standard
-            every X-ray machine, dental sensor, and imaging software in the world already speaks.
-            That means it works with <span className="text-slate-100">any vendor's equipment</span> out
-            of the box, with no per-vendor customization. What you see in this demo is the
-            same integration path a real EAssist clinic would use.
+            This POC proves Copilot can plug into <span className="text-slate-100 font-medium">any clinic's existing imaging system</span>,
+            using whichever of the three industry-standard protocols that clinic supports — with no per-vendor custom work.
+            What you see here is the same integration shape we'd ship to a real EAssist clinic on day one.
           </p>
         </section>
 
