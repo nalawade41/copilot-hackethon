@@ -1,0 +1,70 @@
+
+Welcome to the Copilot DICOM Viewer — a working proof of concept showing how EAssist Copilot can receive and display dental X-rays using DICOM, the universal standard every imaging device in healthcare already speaks.
+
+The sidebar on the left is your navigation — each item is a different way Copilot can get an image. We'll walk through all of them.
+
+This landing page is the executive summary. The key thing to note: we've built three servers and implemented all three industry-standard protocols for getting images from a clinic into Copilot — covering one hundred percent of the dental imaging market with no vendor-specific integrations. Everything here uses the same integration paths a real clinic would use on day one.
+
+
+
+Browser Only mode — the simplest path. I pick a DICOM file and it renders immediately. No server call, no upload. Everything happens right in the browser.
+
+Behind the scenes, Cornerstone3D — the same open-source engine used in professional medical imaging software — is parsing the raw DICOM binary and rendering it on screen. The file never leaves your computer.
+
+On the right — the metadata panel. Patient name, Modality, Study Date, Manufacturer. All extracted from the DICOM file's embedded tags. DICOM isn't just an image — it's a clinical record. Every file carries context alongside the pixels.
+
+Important production note: this mode works with the original DICOM file — full pixel fidelity, all metadata, real-time brightness and contrast adjustments. The trade-off is file size — a dental X-ray runs one to ten megabytes, an MRI series up to fifty. We'll see the lighter alternative in Server mode.
+
+[Action: Click Close. Click "Upload folder", select samples/mri-knee/series-000001/. Confirm browser popup. MRI loads with slice scrubber. Drag slider through slices.]
+
+Now a multi-image study — a 24-slice MRI of a knee. When I upload the folder, Cornerstone3D loads all 24 files and renders the first slice. The slider at the bottom is the slice scrubber — as I drag it, we move through cross-sections of a human knee, exactly like a radiologist's workstation. For dental, most X-rays are single-frame, but this proves Copilot handles volumetric imaging too.
+
+
+
+Server Based mode — same file, but now watch the Network tab. Two calls: a POST sending the DICOM to our .NET backend, then a GET fetching back a rendered PNG.
+
+The backend — .NET 8 with fo-dicom — parses the DICOM, extracts metadata, renders each frame to PNG, and returns URLs. Look at the sizes: original DICOM was about eight megabytes, the PNG coming back is a few hundred kilobytes.
+
+The trade-off: PNG is fast and lightweight — great for slow connections. But you lose the original sixteen-bit pixel depth, which means no real-time brightness and contrast control in the browser. Metadata is preserved separately in the JSON response.
+
+For production, the right approach is hybrid — store the original DICOM so you never lose fidelity, serve a compressed preview for fast loading. We could push even further with lossy JPEG or WebP — down to twenty kilobytes per frame, instant on any connection. The original stays on the server for diagnosis, AI analysis, or measurements.
+
+This backend is also where future AI capabilities plug in — cavity detection, automated measurements, report generation. The architecture is already here.
+
+
+
+The Desktop App page — downloads for macOS and Windows, same codebase.
+
+I'll grab the Mac build. Before opening, there's one step — you can see the red banner. macOS flags unsigned downloads as "damaged." It's not — it's just a code-signing requirement. We click Copy, open Terminal, paste the command, hit Enter. Done once, never again. In production, we'd sign the build with an Apple Developer certificate and this step disappears.
+
+Now — Spotlight, type "Copilot DICOM", launch. The desktop app looks identical to the web version, but notice three new sidebar items: DICOMweb Poll, DIMSE C-STORE, and STOW-RS. These are the three PACS integration protocols. They need the native shell to talk directly to imaging servers without browser security restrictions.
+
+
+
+DICOMweb Poll — Copilot asks the clinic "any new X-rays?" every two seconds.
+
+DICOMweb is the modern HTTP-based imaging standard, introduced around 2015. About fifty to sixty percent of modern PACS systems support it and growing. What makes it attractive: the clinic changes nothing. We just need their server's URL — one setting in Copilot. Zero IT involvement at the clinic.
+
+This URL at the bottom is our Gateway server — standing in for the clinic's PACS. I'll open it, upload a file — simulating a tech taking an X-ray.
+
+Close the window and — there it is. The study appeared automatically. No refresh, no click. Copilot's polling loop detected it within two seconds. I click it, the app fetches the image via WADO-RS — a DICOMweb standard for retrieving pixel data — and renders it in the same Cornerstone3D viewer.
+
+In production, swap this URL with a clinic's real PACS address. Same flow, no code changes.
+
+
+
+Now the push side — the clinic sends images to Copilot instead of Copilot asking for them.
+
+DIMSE C-STORE has been the backbone of medical imaging since 1993. Runs over raw TCP. Every imaging device ever made supports it — one hundred percent coverage. STOW-RS is the modern alternative — same push concept, but over HTTPS. About fifty to sixty percent coverage today.
+
+Both need a one-time clinic setup — the IT admin adds Copilot as a destination. Three fields for DIMSE, one URL for STOW-RS. Two minutes, done once. After that, every X-ray flows automatically.
+
+In our demo, this URL is the Vendor Simulator — a second server standing in for the clinic's imaging software. When I upload here, a script pushes the image to Copilot's Gateway via both protocols simultaneously.
+
+I'll upload a file. A few seconds for the script to run — and there it is in the DIMSE tab, tagged "DIMSE C-STORE TCP." Now switch to STOW-RS — same image, already here, tagged "STOW-RS HTTP."
+
+One upload, two protocols, proven side by side.
+
+
+
+To wrap up: we built a complete DICOM viewer that works in the browser, with a server backend, and as a native desktop app. It supports all three industry-standard protocols — DIMSE, STOW-RS, and DICOMweb polling — covering every dental clinic regardless of what equipment they're running. What you just saw is the same architecture we'd ship to a real EAssist clinic on day one. Thank you.

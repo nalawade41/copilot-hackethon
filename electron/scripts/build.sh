@@ -61,8 +61,9 @@ cd "$ELECTRON_ROOT"
 npx electron-builder --mac
 echo ""
 
-echo "=== Step 1d: Move Mac build to $STAGING_DIR ==="
-mv "$ELECTRON_ROOT/release/Copilot DICOM Viewer-"*".dmg" "$STAGING_DIR/CopilotDICOMViewer-mac.dmg"
+echo "=== Step 1d: Move Mac builds to $STAGING_DIR ==="
+mv "$ELECTRON_ROOT/release/Copilot DICOM Viewer-"*"-arm64.dmg" "$STAGING_DIR/CopilotDICOMViewer-mac-arm64.dmg"
+mv "$ELECTRON_ROOT/release/Copilot DICOM Viewer-"*".dmg" "$STAGING_DIR/CopilotDICOMViewer-mac-x64.dmg"
 echo ""
 
 # -----------------------------------------------------------------------------
@@ -89,9 +90,10 @@ clean_build_outputs
 echo ""
 
 # -----------------------------------------------------------------------------
-echo "=== Step 4: Publish both artifacts to $RELEASE_DIR ==="
+echo "=== Step 4: Publish all artifacts to $RELEASE_DIR ==="
 mkdir -p "$RELEASE_DIR"
-mv "$STAGING_DIR/CopilotDICOMViewer-mac.dmg" "$RELEASE_DIR/"
+mv "$STAGING_DIR/CopilotDICOMViewer-mac-arm64.dmg" "$RELEASE_DIR/"
+mv "$STAGING_DIR/CopilotDICOMViewer-mac-x64.dmg" "$RELEASE_DIR/"
 mv "$STAGING_DIR/CopilotDICOMViewer-win.exe" "$RELEASE_DIR/"
 echo ""
 
@@ -101,12 +103,15 @@ echo ""
 
 echo "=== Done! ==="
 echo ""
-MAC_SIZE=$(du -h "$RELEASE_DIR/CopilotDICOMViewer-mac.dmg" | cut -f1)
+MAC_ARM_SIZE=$(du -h "$RELEASE_DIR/CopilotDICOMViewer-mac-arm64.dmg" | cut -f1)
+MAC_X64_SIZE=$(du -h "$RELEASE_DIR/CopilotDICOMViewer-mac-x64.dmg" | cut -f1)
 WIN_SIZE=$(du -h "$RELEASE_DIR/CopilotDICOMViewer-win.exe" | cut -f1)
 echo "Build sizes:"
-echo "  Mac (.dmg):     $MAC_SIZE"
-echo "  Windows (.exe): $WIN_SIZE"
+echo "  Mac Apple Silicon (.dmg): $MAC_ARM_SIZE"
+echo "  Mac Intel (.dmg):         $MAC_X64_SIZE"
+echo "  Windows (.exe):           $WIN_SIZE"
 echo ""
 echo "Files ready at web/public/release/"
-echo "  Mac:     /release/CopilotDICOMViewer-mac.dmg"
-echo "  Windows: /release/CopilotDICOMViewer-win.exe"
+echo "  Mac (Apple Silicon): CopilotDICOMViewer-mac-arm64.dmg"
+echo "  Mac (Intel):         CopilotDICOMViewer-mac-x64.dmg"
+echo "  Windows:             CopilotDICOMViewer-win.exe"

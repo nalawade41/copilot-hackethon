@@ -3,7 +3,8 @@ import { useState } from 'react';
 // Hosted on S3 (public bucket). Keeping binaries out of the web bundle keeps
 // Vercel deploys fast and avoids GitHub's 100MB file-size push rejection.
 const DOWNLOAD_BASE = 'https://file-sahring-temp-bucket.s3.us-east-1.amazonaws.com';
-const MAC_URL = `${DOWNLOAD_BASE}/CopilotDICOMViewer-mac.dmg`;
+const MAC_ARM_URL = `${DOWNLOAD_BASE}/CopilotDICOMViewer-mac-arm64.dmg`;
+const MAC_X64_URL = `${DOWNLOAD_BASE}/CopilotDICOMViewer-mac-x64.dmg`;
 const WIN_URL = `${DOWNLOAD_BASE}/CopilotDICOMViewer-win.exe`;
 
 const MAC_UNLOCK_CMD = 'xattr -cr "/Applications/Copilot DICOM Viewer.app"';
@@ -117,11 +118,11 @@ export function DownloadPage() {
         </section>
 
         {/* Download cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-          {/* Mac */}
+          {/* Mac — Apple Silicon */}
           <a
-            href={MAC_URL}
+            href={MAC_ARM_URL}
             download
             className="rounded-lg border border-slate-800 bg-slate-950/40 p-5 hover:border-accent/50 hover:bg-slate-950/60 transition-colors group block"
           >
@@ -133,7 +134,33 @@ export function DownloadPage() {
               </div>
               <div>
                 <div className="text-slate-100 font-medium group-hover:text-accent transition-colors">macOS</div>
-                <div className="text-xs text-slate-500">Apple Silicon (arm64)</div>
+                <div className="text-xs text-slate-500">Apple Silicon (M1/M2/M3/M4)</div>
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-slate-500">.dmg installer</span>
+              <span className="text-xs px-2 py-0.5 rounded bg-accent/15 text-accent">Download</span>
+            </div>
+            <p className="mt-3 text-xs text-red-300/90">
+              ⚠ Run the unlock command above <span className="font-semibold">before first launch</span>.
+            </p>
+          </a>
+
+          {/* Mac — Intel */}
+          <a
+            href={MAC_X64_URL}
+            download
+            className="rounded-lg border border-slate-800 bg-slate-950/40 p-5 hover:border-accent/50 hover:bg-slate-950/60 transition-colors group block"
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center">
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-slate-300">
+                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                </svg>
+              </div>
+              <div>
+                <div className="text-slate-100 font-medium group-hover:text-accent transition-colors">macOS</div>
+                <div className="text-xs text-slate-500">Intel (x64)</div>
               </div>
             </div>
             <div className="flex items-center justify-between">
